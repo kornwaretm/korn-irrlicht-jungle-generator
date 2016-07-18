@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
+	<ActiveTarget name="Debug" />
+	<File name="KornJungle\TreeSeed.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="111" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2853" topLine="71" />
+		</Cursor>
+	</File>
+	<File name="KornJungle\TreeSeed.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="100" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="KornJungle\Jungle.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4690" topLine="39" />
+		</Cursor>
+		<Folding>
+			<Collapse line="12" />
+			<Collapse line="51" />
+			<Collapse line="62" />
+			<Collapse line="76" />
+			<Collapse line="89" />
+			<Collapse line="98" />
+		</Folding>
+	</File>
+	<File name="KornJungle\Jungle.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1021" topLine="29" />
+		</Cursor>
+	</File>
+	<File name="KornJungle\JungleChunk.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="19596" topLine="373" />
+		</Cursor>
+		<Folding>
+			<Collapse line="371" />
+		</Folding>
+	</File>
+	<File name="KornJungle\JungleChunk.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="902" topLine="65" />
+		</Cursor>
+	</File>
+</CodeBlocks_layout_file>
