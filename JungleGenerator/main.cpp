@@ -13,8 +13,8 @@ int main(int argc, char** argv)
 {
 
     IrrlichtDevice *device =
-        createDevice(EDT_OPENGL, dimension2d<u32>(640, 480), 16,
-            false, false, false, 0);
+        createDevice(EDT_OPENGL, dimension2d<u32>(640, 480), 32,
+            false, true, false, 0);
 
     device->setWindowCaption(L"Jungle Generator");
 
@@ -25,6 +25,19 @@ int main(int argc, char** argv)
     // camera
     ICameraSceneNode* camera =
         smgr->addCameraSceneNodeFPS(0,100.0f,1.2f);
+
+    // light
+    ILightSceneNode* light = smgr->addLightSceneNode(0, vector3df(5120.0f,100.0f,5120.0f),SColorf(1.0f,1.0f,1.0f,1.0f),400000.0f);
+
+    light->getLightData().DiffuseColor = SColorf(1.0,0.5f,0.5f,1.0f);
+    light->getLightData().AmbientColor = SColorf(0.5f,0.5f,0.5f,0.5f);
+    light->getLightData().SpecularColor = SColorf(1.0f,1.0f,1.0f,1.0f);
+
+
+    // add fly circle animator to light 1
+    scene::ISceneNodeAnimator* anim = smgr->createFlyCircleAnimator (core::vector3df(5120.0f,5000.0f,5120.0f),5000.0f, 0.0005f);
+    light->addAnimator(anim);
+    anim->drop();
 
     // terrain
     ITerrainSceneNode* terrain = smgr->addTerrainSceneNode(
@@ -40,7 +53,6 @@ int main(int argc, char** argv)
         4                   // smoothFactor
         );
 
-    terrain->setMaterialFlag(video::EMF_LIGHTING, false);
 
     terrain->setMaterialTexture(0,
             driver->getTexture("./media/terrain-texture.jpg"));
@@ -63,20 +75,19 @@ int main(int argc, char** argv)
                 terrain,
                 smgr,
                 -1);
-    smgr->getRootSceneNode()->addChild(jungle);
-    jungle->getMaterial(0).setFlag(EMF_LIGHTING, false);
-    //jungle->getMaterial(0).setFlag(EMF_BACK_FACE_CULLING, false);
-    jungle->getMaterial(0).setTexture(0, driver->getTexture("./media/bark.png"));
-    jungle->getMaterial(0).MaterialType = EMT_SOLID;
 
-    jungle->getMaterial(1).setFlag(EMF_LIGHTING, false);
+    smgr->getRootSceneNode()->addChild(jungle);
+    jungle->getMaterial(0).setTexture(0, driver->getTexture("./media/bark.png"));
+    jungle->getMaterial(0).setTexture(1, driver->getTexture("./media/bark_normal.png"));
+    jungle->getMaterial(0).MaterialType = EMT_NORMAL_MAP_SOLID;
+    jungle->getMaterial(0).Shininess = 0.0f;
+
     jungle->getMaterial(1).setFlag(EMF_BACK_FACE_CULLING, false);
     jungle->getMaterial(1).setTexture(0,driver->getTexture("./media/leaf.png"));
     jungle->getMaterial(1).MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
-
-
     // start growing trees
-    for(u32 i = 0 ; i < 5000 ; i++)
+
+    for(u32 i = 0 ; i < 1000 ; i++)
     {
         f32 cx = 100.0f + rand()%10040;
         f32 cy = 100.0f + rand()%10040;
@@ -92,7 +103,7 @@ int main(int argc, char** argv)
                     5,// min rot
                     30,// max rot
                     800.0f, // length
-                    2, // branching count
+                    8, // branching count
                     7.5f, // max radius;
                     3, // ground root
                     200.0f, // leaf_width
@@ -239,7 +250,7 @@ int main(int argc, char** argv)
                    0,// min rot
                    30,// max rot
                    400.0f, // length
-                   4, // branching count
+                   6, // branching count
                    10.0f, // max radius;
                    3, // ground root
                    200.0f, // leaf_width

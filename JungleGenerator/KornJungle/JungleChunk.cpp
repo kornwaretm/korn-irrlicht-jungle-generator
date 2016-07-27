@@ -149,6 +149,47 @@ namespace irr
                         }
                     }
                 }
+
+                // calculate tangent and bi tangent
+                for(u32 i = 0 ; i < indexBuffer.size() ; i+= 3)
+                {
+                    u32 id1 = indexBuffer[i];
+                    u32 id2 = indexBuffer[i + 1];
+                    u32 id3 = indexBuffer[i + 2];
+
+                    core::vector3df &p1 = vertexBuffer[id1].Pos;
+                    core::vector3df &p2 = vertexBuffer[id2].Pos;
+                    core::vector3df &p3 = vertexBuffer[id3].Pos;
+
+                    core::vector2df &uv1 = vertexBuffer[id1].TCoords;
+                    core::vector2df &uv2 = vertexBuffer[id2].TCoords;
+                    core::vector2df &uv3 = vertexBuffer[id3].TCoords;
+
+                    core::vector3df deltaPos1 = p2 - p1;
+                    core::vector3df deltaPos2 = p3 - p1;
+                    core::vector2df deltaUV1 = uv2 - uv1;
+                    core::vector2df deltaUV2 = uv3 - uv1;
+                    f32 r = 1.0f / (deltaUV1.X * deltaUV2.Y - deltaUV1.Y * deltaUV2.X);
+                    vertexBuffer[id1].Tangent = (deltaPos1 * deltaUV2.Y   - deltaPos2 * deltaUV1.Y)*r;
+                    vertexBuffer[id1].Binormal = (deltaPos2 * deltaUV1.X   - deltaPos1 * deltaUV2.X)*r;
+
+
+                    deltaPos1 = p1 - p2;
+                    deltaPos2 = p3 - p2;
+                    deltaUV1 = uv1 - uv2;
+                    deltaUV2 = uv3 - uv2;
+                    r = 1.0f / (deltaUV1.X * deltaUV2.Y - deltaUV1.Y * deltaUV2.X);
+                    vertexBuffer[id2].Tangent = (deltaPos1 * deltaUV2.Y   - deltaPos2 * deltaUV1.Y)*r;
+                    vertexBuffer[id2].Binormal = (deltaPos2 * deltaUV1.X   - deltaPos1 * deltaUV2.X)*r;
+
+                    deltaPos1 = p2 - p3;
+                    deltaPos2 = p1 - p3;
+                    deltaUV1 = uv1 - uv3;
+                    deltaUV2 = uv2 - uv3;
+                    r = 1.0f / (deltaUV1.X * deltaUV2.Y - deltaUV1.Y * deltaUV2.X);
+                    vertexBuffer[id3].Tangent = (deltaPos1 * deltaUV2.Y   - deltaPos2 * deltaUV1.Y)*r;
+                    vertexBuffer[id3].Binormal = (deltaPos2 * deltaUV1.X   - deltaPos1 * deltaUV2.X)*r;
+                }
             }
 
             bool JungleChunk::createTreeGeom(core::vector3df position,
@@ -213,14 +254,14 @@ namespace irr
                         f32 vy = cvp.Y + current_position.Y;
                         f32 vz = cvp.Z + current_position.Z;
 
-                        cvp.normalize();
-                        f32 nx = cvp.X;
-                        f32 ny = cvp.Y;
-                        f32 nz = cvp.Z;
+                        cvp = cvp.normalize();
+                        f32 nx = -cvp.X * jungle->normalScale;
+                        f32 ny = -cvp.Y * jungle->normalScale;
+                        f32 nz = -cvp.Z * jungle->normalScale;
 
                         f32 u = f32(bark_type)/8.0f + f32(j % u8(f32(jungle->NUM_VERTICES) / 2.0f)) / (f32(jungle->NUM_VERTICES) / 2.0f) * 0.125;
 
-                        vertexBuffer.push_back(video::S3DVertex(vx,vy,vz,nx,ny,nz,vcolor, u,v));
+                        vertexBuffer.push_back(video::S3DVertexTangents(vx,vy,vz,nx,ny,nz,vcolor, u,v,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f));
 
                     }
                     //assign indices
@@ -240,6 +281,7 @@ namespace irr
                             indexBuffer.push_back(id2);
                             indexBuffer.push_back(id4);
                             indexBuffer.push_back(id3);
+
                         }
                     }
                     u16 nseed = rand();
@@ -356,14 +398,14 @@ namespace irr
                         f32 vy = cvp.Y + current_position.Y;
                         f32 vz = cvp.Z + current_position.Z;
 
-                        cvp.normalize();
-                        f32 nx = cvp.X;
-                        f32 ny = cvp.Y;
-                        f32 nz = cvp.Z;
+                        cvp = cvp.normalize();
+                        f32 nx = -cvp.X * jungle->normalScale;
+                        f32 ny = -cvp.Y * jungle->normalScale;// * 20.0f;
+                        f32 nz = -cvp.Z * jungle->normalScale;// * 20.0f;
 
                         f32 u = f32(bark_type)/8.0f + f32(j % u8(f32(jungle->NUM_VERTICES) / 2.0f)) / (f32(jungle->NUM_VERTICES) / 2.0f) * 0.128;
 
-                        vertexBuffer.push_back(video::S3DVertex(vx,vy,vz,nx,ny,nz,vcolor, u,v));
+                        vertexBuffer.push_back(video::S3DVertexTangents(vx,vy,vz,nx,ny,nz,vcolor, u,v, 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f));
 
                     }
 
@@ -483,8 +525,8 @@ namespace irr
                     v2.rotateXYBy(initialRotation.Z);
                     v2 += position;
 
-                    vertexBufferLeaf.push_back(video::S3DVertex(v1.X,v1.Y,v1.Z,0,1,0,vcolor, f32(type)/8.0f, 1.0 - v));
-                    vertexBufferLeaf.push_back(video::S3DVertex(v2.X,v2.Y,v2.Z,0,1,0,vcolor, f32(type)/8.0f + 0.125f, 1.0 - v));
+                    vertexBufferLeaf.push_back(video::S3DVertexTangents(v1.X,v1.Y,v1.Z,0,1,0,vcolor, f32(type)/8.0f, 1.0 - v, 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f));
+                    vertexBufferLeaf.push_back(video::S3DVertexTangents(v2.X,v2.Y,v2.Z,0,1,0,vcolor, f32(type)/8.0f + 0.125f, 1.0 - v, 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f));
 
                     if(i > 0)
                     {

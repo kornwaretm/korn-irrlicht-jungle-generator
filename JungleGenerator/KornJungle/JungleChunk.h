@@ -46,15 +46,14 @@ namespace irr
                                             u16 age);
                 protected:
                 private:
-
                     bool renderable;
                     bool renderableLow;
                     bool needUpdate;
                     TreeSeed** seeds;
 
-                    core::array<video::S3DVertex> vertexBuffer;
+                    core::array<video::S3DVertexTangents > vertexBuffer;
                     core::array<u16> indexBuffer;
-                    core::array<video::S3DVertex> vertexBufferLeaf;
+                    core::array<video::S3DVertexTangents> vertexBufferLeaf;
                     core::array<u16> indexBufferLeaf;
 
                     virtual bool createTreeGeom(core::vector3df position,

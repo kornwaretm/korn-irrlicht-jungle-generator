@@ -26,6 +26,7 @@ namespace irr
                 WORLD_SIZE = totalPossibleTreeRooted / CHUNK_SIZE;
                 CHUNK_RENDER_DIMENSION = f32(dimension) / f32(WORLD_SIZE);
                 NUM_VERTICES = verticesDetail;
+                normalScale = 500.0f;
 
                 chunks = new JungleChunk*[WORLD_SIZE];
                 for(u8 i = 0; i < WORLD_SIZE; i++)
@@ -110,6 +111,10 @@ namespace irr
             void Jungle::render()
             {
                 video::IVideoDriver * driver = SceneManager->getVideoDriver();
+
+                ICameraSceneNode* cam = SceneManager->getActiveCamera();
+                driver->setTransform(video::ETS_VIEW, cam->getViewMatrix());
+                driver->setTransform(video::ETS_PROJECTION, cam->getProjectionMatrix());
                 driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 
                 core::vector3df camPos = SceneManager->getActiveCamera()->getAbsolutePosition();

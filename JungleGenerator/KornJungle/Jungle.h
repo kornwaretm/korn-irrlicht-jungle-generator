@@ -35,6 +35,8 @@ namespace irr
 
                     f32 TREE_DIMENSION;
 
+                    f32 normalScale;
+
                     Jungle(u32 dimension,
                            u32 chunkSize,
                            u32 treeDimension,
